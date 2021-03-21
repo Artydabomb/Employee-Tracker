@@ -89,12 +89,13 @@ const viewAllEmployeesbyDepartment = () => {
         ])
         .then(answers => {
             console.log(answers.empdep);
-            connection.query(`SELECT * FROM department WHERE name = "${answers.empdep}"`, function (err, result) {
+            connection.query(`SELECT * FROM department WHERE ?`, [{ name: answers.empdep }], function (err, result) {
                 if (err) throw err;
                 console.log(result);
                 connection.query(`SELECT employee.id, employee.first_name,  employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, " ",manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id WHERE employee.role_id = "${result[0].id}"`, function (err, result) {
                     if (err) throw err;
                     console.table(result);
+                    mainMenu();
                 })
             })
         });
@@ -105,19 +106,34 @@ const viewAllEmployeesbyManager = () => {
         .prompt([
             {
                 type: 'list',
-                message: 'Which manager of the employee would you like to view?',
+                message: 'Choose which manager of whom you would like to view direct reports.',
                 name: 'empman',
-                choices: [],
+                choices: ['Michael Scott', 'Janet Levinson', 'David Wallace'],
             },
         ])
         .then(answers => {
             console.log(answers.empman);
-            connection.query(`SELECT * FROM department WHERE name = "${answers.empdep}"`, function (err, result) {
+            let id;
+            switch (answers.empman) {
+                case "Michael Scott":
+                    id = 16;
+                    break;
+                case "Janet Levinson":
+                    id = 17;
+                    break;
+                case "David Wallace":
+                    id = 18;
+                    break;
+                default: console.log("No managers exist with that name")
+            }
+            connection.query(`SELECT * FROM employee WHERE ?`, [{ manager_id: id }], function (err, result) {
                 if (err) throw err;
-                console.log(result);
-                connection.query(`SELECT employee.id, employee.first_name,  employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, " ",manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id WHERE employee.role_id = "${result[0].id}"`, function (err, result) {
+                console.table(result);
+                mainMenu();
+                connection.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, " ",manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id WHERE employee.role_id = "${result[0].id}"`, function (err, result) {
                     if (err) throw err;
                     console.table(result);
+                    mainMenu();
                 })
             })
         });
@@ -137,20 +153,71 @@ const addEmployee = () => {
                 name: 'emplast',
             },
             {
-                type: 'input',
+                type: 'list',
                 message: "What is the employee's role?",
                 name: 'emprole',
+                choices: ['Sales', 'Reception', 'Accounting', 'Customer Relations', 'Human Resources', 'Intern', 'Manager', 'Director', 'Executive'],
             },
             {
-                type: 'input',
+                type: 'list',
                 message: "Who is the employee's manager?",
                 name: 'empman',
+                choices: ['Michael Scott', 'Janet Levinson', 'David Wallace'],
             },
         ])
         .then(answers => {
             console.log(answers);
-            err =>
-                err ? console.error(err) : console.log("Success! Response added to file.");
+            let roleID;
+            let managerId;
+            switch (answers.emprole) {
+                case "Sales":
+                    id = 1;
+                    break;
+                case "Reception":
+                    id = 2;
+                    break;
+                case "Accounting":
+                    id = 3;
+                    break;
+                case "Customer Relations":
+                    id = 4;
+                    break;
+                case "Human Resources":
+                    id = 5;
+                    break;
+                case "Intern":
+                    id = 6;
+                    break;
+                case "Manager":
+                    id = 7;
+                    break;
+                case "Director":
+                    id = 8;
+                    break;
+                case "Executive":
+                    id = 9;
+                    break;
+
+                default: console.log("No managers exist with that name")
+            }
+
+            switch (answers.empman) {
+                case "Michael Scott":
+                    id = 16;
+                    break;
+                case "Janet Levinson":
+                    id = 17;
+                    break;
+                case "David Wallace":
+                    id = 18;
+                    break;
+                default: console.log("No managers exist with that name")
+            }
+            connection.query(`INSERT INTO org_DB.employee(first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [{ first_name: answers.empfirst, last_name: answers.emplast, role_id: roleID, manager_id: managerId }], function (err, result) {
+                if (err) throw err;
+                console.table(result);
+                mainMenu();
+            });
         });
 };
 
