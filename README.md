@@ -16,10 +16,15 @@ To create a content management system (CMS) for a company that keeps track of th
 ## Installation
 The following NPM dependences are required to be installed for the use of this program: 
 
-Inquirer & MySQL. 
+* Inquirer
+* MySQL 
 
 ## Usage
 Execute the application using node ./index.js. After answering all the prompted questions/statements, your end product should have something similar to the below image: 
+
+<img src="./Demo.png" alt="Example image of when the user chooses to view all employees.">
+
+A demonstration of using this application can be found here: https://drive.google.com/file/d/11S37r_U7eaWDLgHPVuWqFwwy5ICxZTKf/view
 
 ## Contributing 
 Feedback for the project is appreciate. Feel free to use the coding for generating your README files!
