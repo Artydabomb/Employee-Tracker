@@ -91,7 +91,7 @@ const viewAllEmployeesbyDepartment = () => {
             console.log(answers.empdep);
             connection.query(`SELECT * FROM department WHERE ?`, [{ name: answers.empdep }], function (err, result) {
                 if (err) throw err;
-                console.log(result);
+                // console.log(result);
                 connection.query(`SELECT employee.id, employee.first_name,  employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, " ",manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id WHERE employee.role_id = "${result[0].id}"`, function (err, result) {
                     if (err) throw err;
                     console.table(result);
