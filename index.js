@@ -128,8 +128,8 @@ const viewAllEmployeesbyManager = () => {
             }
             connection.query(`SELECT * FROM employee WHERE ?`, [{ manager_id: id }], function (err, result) {
                 if (err) throw err;
-                console.table(result);
-                mainMenu();
+                // console.table(result);
+                // mainMenu();
                 connection.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, " ",manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id WHERE employee.role_id = "${result[0].id}"`, function (err, result) {
                     if (err) throw err;
                     console.table(result);
@@ -171,31 +171,31 @@ const addEmployee = () => {
             let managerId;
             switch (answers.emprole) {
                 case "Sales":
-                    id = 1;
+                    roleID = 1;
                     break;
                 case "Reception":
-                    id = 2;
+                    roleID = 2;
                     break;
                 case "Accounting":
-                    id = 3;
+                    roleID = 3;
                     break;
                 case "Customer Relations":
-                    id = 4;
+                    roleID = 4;
                     break;
                 case "Human Resources":
-                    id = 5;
+                    roleID = 5;
                     break;
                 case "Intern":
-                    id = 6;
+                    roleID = 6;
                     break;
                 case "Manager":
-                    id = 7;
+                    roleID = 7;
                     break;
                 case "Director":
-                    id = 8;
+                    roleID = 8;
                     break;
                 case "Executive":
-                    id = 9;
+                    roleID = 9;
                     break;
 
                 default: console.log("No managers exist with that name")
@@ -203,17 +203,17 @@ const addEmployee = () => {
 
             switch (answers.empman) {
                 case "Michael Scott":
-                    id = 16;
+                    managerId = 16;
                     break;
                 case "Janet Levinson":
-                    id = 17;
+                    managerId = 17;
                     break;
                 case "David Wallace":
-                    id = 18;
+                    managerId = 18;
                     break;
                 default: console.log("No managers exist with that name")
             }
-            connection.query(`INSERT INTO org_DB.employee(first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [{ first_name: answers.empfirst, last_name: answers.emplast, role_id: roleID, manager_id: managerId }], function (err, result) {
+            connection.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES ?, ?, ?, ?`, [{ first_name: answers.empfirst, last_name: answers.emplast, role_id: roleID, manager_id: managerId }], function (err, result) {
                 if (err) throw err;
                 console.table(result);
                 mainMenu();
